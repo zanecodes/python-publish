@@ -1,0 +1,21 @@
+name: 'Build wheel'
+description: 'Build a Python wheel using cibuildwheel and upload the resulting artifact'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2
+      name: Install Python
+      with:
+        python-version: '3.8'
+
+    - name: Build wheels
+      env:
+        CIBW_ENVIRONMENT_MACOS: BLAS=None LAPACK=None ATLAS=None
+        CIBW_SKIP: pp37-macosx_x86_64
+      uses: pypa/cibuildwheel@v2.1.1
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./wheelhouse/*.whl

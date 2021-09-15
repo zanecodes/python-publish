@@ -1,0 +1,18 @@
+name: 'Publish to PyPI'
+description: 'Publishes an artifact to PyPI'
+inputs:
+  repository_url:
+    description: 'The PyPI repository URL to publish to'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: artifact
+        path: dist
+
+    - uses: pypa/gh-action-pypi-publish@v1.4.2
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}
+        repository_url: ${{ inputs.repository_url }}
