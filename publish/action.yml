@@ -1,6 +1,25 @@
 name: 'Publish to PyPI'
 description: 'Publishes an artifact to PyPI'
 inputs:
+  user:
+    description: 'The username to use to publish to PyPI'
+    required: false
+    default: '__token__'
+  password:
+    description: 'The password to use to publish to PyPI'
+    required: true
+  verify_metadata:
+    description: 'Whether to check package metadata before uploading'
+    required: false
+    default: true
+  skip_existing:
+    description: 'Do not fail if a Python package distribution exists in the target package index'
+    required: false
+    default: false
+  verbose:
+    description: 'Show verbose output.'
+    required: false
+    default: false
   repository_url:
     description: 'The PyPI repository URL to publish to'
 runs:
@@ -13,6 +32,9 @@ runs:
 
     - uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
+        user: ${{ inputs.user }}
+        password: ${{ inputs.password }}
         repository_url: ${{ inputs.repository_url }}
+        verify_metadata: ${{ inputs.verify_metadata }}
+        skip_existing: ${{ inputs.skip_existing }}
+        verbose: ${{ inputs.verbose }}
