@@ -10,10 +10,22 @@ runs:
       with:
         python-version: '3.8'
 
+    - name: Configure Numpy builds on macos if necessary
+      shell: 'bash'
+      run: |
+        python3 -m pip install build
+        echo "
+        import os
+        import build
+        requires = build.ProjectBuilder('.').build_system_requires
+        if 'numpy' in requires or 'oldest-supported-numpy' in requires:
+          # see https://numpy.org/doc/stable/user/building.html#lapack
+          print('CIBW_ENVIRONMENT_MACOS=BLAS=None LAPACK=None ATLAS=None ' + os.getenv('CIBW_ENVIRONMENT_MACOS', ''))
+          # pypy builds seem to ignore the above environment variables, so we just won't build pypy wheels for now
+          print('CIBW_SKIP=pp37-macosx_x86_64 ' + os.getenv('CIBW_SKIP', ''))
+        " | python3 >> $GITHUB_ENV
+
     - name: Build wheels
-      env:
-        CIBW_ENVIRONMENT_MACOS: BLAS=None LAPACK=None ATLAS=None
-        CIBW_SKIP: pp37-macosx_x86_64
       uses: pypa/cibuildwheel@v2.1.1
 
     - uses: actions/upload-artifact@v2

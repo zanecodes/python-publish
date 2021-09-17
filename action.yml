@@ -1,0 +1,8 @@
+name: 'Build & publish'
+description: 'Build a Python source distribution and wheels and publishes them to PyPI'
+inputs:
+  repository_url:
+    description: 'The PyPI repository URL to publish to'
+runs:
+  using: 'composite'
+
